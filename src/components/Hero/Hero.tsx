@@ -101,7 +101,7 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  const headline = "GOPIKRISHNAS";
+  const headline = "GOPIKRISHNA S";
 
   return (
     <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden z-20">

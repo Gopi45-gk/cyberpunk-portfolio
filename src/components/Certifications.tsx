@@ -24,6 +24,7 @@ const achievements = [
   "🥇 1st Prize — Project Expo, Agni College of Technology",
   "🥇 1st Prize — Paper Presentation, King's College of Engineering",
   "🥇 1st Prize — Paper Presentation, Sri Venkateshwara Engg & Technology",
+  "🥈 2nd Prize — Paper Presentation, Rajalakshmi Engineering College",
   "🏆 PALS Innowah Finalist — Best Appreciation Award + Amazon Voucher",
   "🏆 Best Team Award — Hackathon-Codeathon, Prathyusha Engineering College",
   "🎖️ 13th Rank — NIDAR 2025 (National Level)",

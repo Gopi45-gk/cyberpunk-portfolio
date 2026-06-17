@@ -51,7 +51,13 @@ const techMatrix = [
       { name: "NumPy", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/numpy/numpy-original.svg" },
       { name: "Pandas", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pandas/pandas-original.svg" },
       { name: "Streamlit", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/streamlit/streamlit-original.svg" },
-      { name: "Gradio", icon: null }
+      { name: "Gradio", icon: null },
+      { name: "Whisper", icon: null },
+      { name: "Claude", icon: null },
+      { name: "ChatGPT", icon: null },
+      { name: "RAG", icon: null },
+      { name: "Llama", icon: null },
+      { name: "MediaPipe", icon: null }
     ]
   },
   {
@@ -92,7 +98,15 @@ const techMatrix = [
       { name: "Canva", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" },
       { name: "CapCut", icon: null },
       { name: "Premiere Pro", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-original.svg" },
-      { name: "Photoshop", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" }
+      { name: "Photoshop", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" },
+      { name: "LottieFiles", icon: null }
+    ]
+  },
+  {
+    category: "IoT & Emerging Tech",
+    items: [
+      { name: "IoT", icon: null },
+      { name: "Drone Technology", icon: null }
     ]
   },
   {
