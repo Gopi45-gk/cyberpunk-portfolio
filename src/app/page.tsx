@@ -1,15 +1,18 @@
 import ScrollyCanvas from "@/components/ScrollyCanvas";
 import Overlay from "@/components/Overlay";
-import Projects from "@/components/Projects";
 import Experience from "@/components/Experience";
-import Education from "@/components/Education";
+import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
+import Education from "@/components/Education";
 import Certifications from "@/components/Certifications";
+import Hero from "@/components/Hero/Hero";
+import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-[#121212] selection:bg-white selection:text-black">
-      <div className="relative">
+    <main className="w-full bg-[#050505] text-white">
+      <Hero />
+      <div className="relative z-10 h-[400vh]">
         <ScrollyCanvas />
         <Overlay />
       </div>
@@ -18,12 +21,9 @@ export default function Home() {
       <Skills />
       <Projects />
       <Experience />
+      <Contact />
       
-      {/* Footer */}
-      <footer className="bg-[#121212] text-white/50 py-8 text-center border-t border-white/10 relative z-20">
-        <p>© {new Date().getFullYear()} GOPIKRISHNA S. All rights reserved.</p>
-        <p className="mt-2 text-sm">Chennai | 7904223010 | <a href="mailto:gopikaru0090@gmail.com" className="hover:text-white transition-colors">gopikaru0090@gmail.com</a></p>
-      </footer>
+
     </main>
   );
 }

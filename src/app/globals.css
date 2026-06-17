@@ -1,112 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: #00f3ff;
+  --bg-void:        #050505;
+  --bg-surface:     #0a0f14;
+  --bg-elevated:    #0f1923;
+
+  --cyan-primary:   #00f3ff;
+  --cyan-dim:       #00b8c2;
+  --cyan-ghost:     rgba(0, 243, 255, 0.06);
+
+  --pink-accent:    #ff79c6;
+  --red-hot:        #ff003c;
+  --amber-warn:     #ffb86c;
+  --green-ok:       #50fa7b;
+
+  --text-primary:   #e0f7fa;
+  --text-secondary: #8892a4;
+  --text-ghost:     rgba(224, 247, 250, 0.3);
+
+  --border-cyan:    rgba(0, 243, 255, 0.2);
+  --border-bright:  rgba(0, 243, 255, 0.7);
+
+  --font-mono:      var(--font-fira), 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  --font-display:   var(--font-space), 'Space Grotesk', sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-fira);
+  --color-background: var(--bg-void);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-mono);
+  --font-display: var(--font-display);
 }
 
 body {
-  background: var(--background);
-  background-image: 
-    linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+  background-color: var(--bg-void);
+  background-image:
+    linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
   background-attachment: fixed;
-  color: var(--foreground);
-  font-family: var(--font-sans), monospace;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-/* Cyberpunk Text Selection */
-::selection {
-  background: #ff003c;
-  color: #fff;
-  text-shadow: 0 0 5px #fff;
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(10, 15, 20, 0.75);
+  border: 1px solid var(--border-cyan);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.08), inset 0 0 20px rgba(0, 243, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-/* Global Typography Hacks for Theme */
+.glass-card:hover {
+  border-color: rgba(0, 243, 255, 0.75);
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.35), inset 0 0 30px rgba(0, 243, 255, 0.12);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--cyan-primary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--red-hot); box-shadow: 0 0 8px var(--red-hot); }
+
+/* Text Selection */
+::selection { background: var(--red-hot); color: #fff; }
+
+/* Custom Cursor Hiding */
+* {
+  cursor: none !important;
+}
+
+/* Base Headings */
 h1 {
-  text-shadow: 0 0 15px rgba(0, 243, 255, 0.8), 0 0 30px rgba(0, 243, 255, 0.4) !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-shadow: 0 0 20px rgba(0,243,255,0.9), 0 0 50px rgba(0,243,255,0.4);
 }
 
-h2, h3 {
-  color: #fff !important;
-  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-  letter-spacing: 0.05em;
+h2 {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 12px rgba(0,243,255,0.6);
 }
 
-h2::before {
-  content: ">_ ";
-  color: #00f3ff;
-  text-shadow: 0 0 10px #00f3ff;
-  animation: blink 1s step-end infinite;
+h3 {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  color: var(--cyan-dim);
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
+/* Animations */
+@keyframes crt-flicker {
+  0% { opacity: 0; }
+  10% { opacity: 0.3; }
+  20% { opacity: 0; }
+  30% { opacity: 0.7; }
+  100% { opacity: 1; }
 }
 
-/* Overriding Component Tailwind Classes Globally */
-.bg-white\/5 {
-  background: rgba(0, 15, 20, 0.7) !important;
-  border-color: rgba(0, 243, 255, 0.3) !important;
-  box-shadow: 0 0 15px rgba(0, 243, 255, 0.1), inset 0 0 20px rgba(0, 243, 255, 0.05) !important;
-  backdrop-filter: blur(8px) !important;
-}
-
-.bg-white\/5:hover {
-  background: rgba(0, 25, 35, 0.9) !important;
-  border-color: rgba(0, 243, 255, 0.8) !important;
-  box-shadow: 0 0 25px rgba(0, 243, 255, 0.4), inset 0 0 30px rgba(0, 243, 255, 0.2) !important;
-}
-
-.text-gray-400 {
-  color: #8be9fd !important; /* Cyberpunk cyan/blue */
-}
-
-.text-gray-300 {
-  color: #bd93f9 !important; /* Cyberpunk purple */
-}
-
-.text-gray-200 {
-  color: #f8f8f2 !important;
-}
-
-.border-white\/10, .border-white\/20 {
-  border-color: rgba(0, 243, 255, 0.3) !important;
-}
-
-a {
-  color: #ff79c6;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-a:hover {
-  color: #ff003c;
-  text-shadow: 0 0 15px #ff003c;
-}
-
-/* Scrollbar Hacker Style */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-::-webkit-scrollbar-thumb {
-  background: #00f3ff;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ff003c;
-  box-shadow: 0 0 10px #ff003c;
+.crt-flicker-on {
+  animation: crt-flicker 0.4s ease forwards;
 }
