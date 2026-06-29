@@ -60,13 +60,13 @@ const rings: RingConfig[] = [
     items: [
       { name: "HTML5", icon: DI("html5") },
       { name: "CSS3", icon: DI("css3") },
-      { name: "Tailwind", icon: DI("tailwindcss") },
+      { name: "Tailwind CSS", icon: DI("tailwindcss") },
       { name: "Bootstrap", icon: DI("bootstrap") },
       { name: "React", icon: DI("react") },
       { name: "Next.js", icon: DI("nextjs") },
       { name: "Vite", icon: DI("vitejs") },
       { name: "GSAP", icon: null },
-      { name: "Framer", icon: null },
+      { name: "Framer Motion", icon: null },
     ],
   },
   {
@@ -76,7 +76,7 @@ const rings: RingConfig[] = [
     direction: "cw",
     items: [
       { name: "Node.js", icon: DI("nodejs") },
-      { name: "Express", icon: DI("express") },
+      { name: "Express.js", icon: DI("express") },
       { name: "FastAPI", icon: DI("fastapi") },
       { name: "Flask", icon: DI("flask") },
       { name: "Django", icon: DI("django", "plain") },
@@ -85,14 +85,14 @@ const rings: RingConfig[] = [
     ],
   },
   {
-    category: "AI / ML",
+    category: "AI / MACHINE LEARNING",
     radius: 260,
     duration: 70,
     direction: "ccw",
     items: [
       { name: "TensorFlow", icon: DI("tensorflow") },
       { name: "PyTorch", icon: DI("pytorch") },
-      { name: "Scikit", icon: DI("scikitlearn") },
+      { name: "Scikit-learn", icon: DI("scikitlearn") },
       { name: "OpenCV", icon: DI("opencv") },
       { name: "MediaPipe", icon: null },
       { name: "NumPy", icon: DI("numpy") },
@@ -102,7 +102,7 @@ const rings: RingConfig[] = [
       { name: "Gradio", icon: null },
       { name: "Whisper", icon: null },
       { name: "LangChain", icon: null },
-      { name: "HuggingFace", icon: null },
+      { name: "Hugging Face", icon: null },
       { name: "ChatGPT", icon: null },
       { name: "Claude", icon: null },
       { name: "Gemini", icon: null },
@@ -126,21 +126,21 @@ const rings: RingConfig[] = [
     ],
   },
   {
-    category: "CLOUD",
+    category: "CLOUD & DEPLOYMENT",
     radius: 355,
     duration: 90,
     direction: "ccw",
     items: [
       { name: "AWS", icon: DI("amazonwebservices", "original-wordmark") },
       { name: "Azure", icon: DI("azure") },
-      { name: "GCP", icon: DI("googlecloud") },
+      { name: "Google Cloud", icon: DI("googlecloud") },
       { name: "Vercel", icon: DI("vercel") },
       { name: "Netlify", icon: null },
       { name: "GoDaddy", icon: null },
     ],
   },
   {
-    category: "DEVOPS",
+    category: "DEVOPS & TOOLS",
     radius: 400,
     duration: 100,
     direction: "cw",
@@ -157,7 +157,7 @@ const rings: RingConfig[] = [
     ],
   },
   {
-    category: "DESIGN",
+    category: "DESIGN & CREATIVE",
     radius: 445,
     duration: 110,
     direction: "ccw",
@@ -166,73 +166,78 @@ const rings: RingConfig[] = [
       { name: "Canva", icon: DI("canva") },
       { name: "Photoshop", icon: DI("photoshop") },
       { name: "Illustrator", icon: DI("illustrator", "plain") },
-      { name: "Premiere", icon: DI("premierepro") },
+      { name: "Premiere Pro", icon: DI("premierepro") },
       { name: "After Effects", icon: DI("aftereffects") },
       { name: "CapCut", icon: null },
       { name: "LottieFiles", icon: null },
     ],
   },
   {
-    category: "DATA ANALYTICS",
+    category: "IoT & EMERGING TECH",
     radius: 485,
     duration: 115,
     direction: "cw",
     items: [
-      { name: "Power BI", icon: null },
-      { name: "Tableau", icon: null },
-      { name: "Excel", icon: null },
-      { name: "Spark", icon: DI("apachespark") },
-      { name: "Kafka", icon: DI("apachekafka") },
+      { name: "Arduino", icon: DI("arduino") },
+      { name: "ESP32", icon: null },
+      { name: "Raspberry Pi", icon: DI("raspberrypi") },
+      { name: "Drone Technology", icon: null },
+      { name: "IoT", icon: null },
+      { name: "ROS", icon: null },
+      { name: "Antigravity IDE", icon: null },
     ],
   },
   {
-    category: "MOBILE",
+    category: "PLATFORMS",
     radius: 520,
     duration: 125,
     direction: "ccw",
+    items: [
+      { name: "Google Colab", icon: null },
+      { name: "Kaggle", icon: DI("kaggle") },
+      { name: "Replit", icon: null },
+      { name: "Antigravity IDE", icon: null },
+    ],
+  },
+  {
+    category: "MOBILE DEVELOPMENT",
+    radius: 555,
+    duration: 135,
+    direction: "cw",
     items: [
       { name: "React Native", icon: DI("react") },
       { name: "Flutter", icon: DI("flutter") },
       { name: "Android", icon: DI("android") },
       { name: "Kotlin", icon: DI("kotlin") },
+      { name: "Swift", icon: DI("swift") },
     ],
   },
   {
-    category: "SECURITY",
-    radius: 555,
-    duration: 135,
+    category: "BLOCKCHAIN",
+    radius: 590,
+    duration: 120,
+    direction: "ccw",
+    items: [
+      { name: "Solidity", icon: DI("solidity") },
+      { name: "Ethereum", icon: null },
+      { name: "Binance Smart Chain", icon: null },
+      { name: "Polygon", icon: DI("polygon") },
+      { name: "Web3.js", icon: null },
+      { name: "Ethers.js", icon: null },
+    ],
+  },
+  {
+    category: "CYBER SECURITY",
+    radius: 625,
+    duration: 140,
     direction: "cw",
     items: [
       { name: "JWT", icon: null },
       { name: "OAuth", icon: DI("oauth") },
       { name: "Firebase Auth", icon: DI("firebase", "plain") },
-      { name: "SSL/TLS", icon: null },
-    ],
-  },
-  {
-    category: "IoT & EMERGING",
-    radius: 590,
-    duration: 120,
-    direction: "ccw",
-    items: [
-      { name: "Arduino", icon: DI("arduino") },
-      { name: "ESP32", icon: null },
-      { name: "Raspberry Pi", icon: DI("raspberrypi") },
-      { name: "Drone Tech", icon: null },
-      { name: "IoT", icon: null },
-      { name: "ROS", icon: null },
-    ],
-  },
-  {
-    category: "PLATFORMS",
-    radius: 625,
-    duration: 140,
-    direction: "cw",
-    items: [
-      { name: "Colab", icon: null },
-      { name: "Kaggle", icon: DI("kaggle") },
-      { name: "Replit", icon: null },
-      { name: "Antigravity", icon: null },
+      { name: "SSL", icon: null },
+      { name: "Burp Suite", icon: null },
+      { name: "Wireshark", icon: null },
     ],
   },
 ];
@@ -469,7 +474,8 @@ function TechPlanet({
             boxShadow: "0 0 12px rgba(0,243,255,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
           whileHover={{
-            scale: 1.2,
+            scale: 1.08,
+            rotate: 2,
             boxShadow: "0 0 35px rgba(0,243,255,0.5), 0 0 70px rgba(0,243,255,0.15), inset 0 0 20px rgba(0,243,255,0.1)",
             borderColor: "rgba(0,243,255,0.8)",
           }}
@@ -659,10 +665,10 @@ function MobileTechCard({ item, category }: { item: TechItem; category: string }
 
   return (
     <div
-      className="snap-start flex-shrink-0 flex flex-col items-center justify-center rounded-[18px] bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] relative overflow-visible transition-all duration-300"
+      className="snap-start flex-shrink-0 flex flex-col items-center justify-center rounded-[20px] bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] relative overflow-visible transition-all duration-300"
       style={{
-        width: '100px',
-        height: '110px',
+        width: '90px',
+        height: '90px',
         padding: '16px',
         boxShadow: showTip ? "0 0 25px rgba(0,243,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)" : "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
         transform: showTip ? "scale(1.05)" : "scale(1)",
@@ -761,7 +767,7 @@ export default function Skills() {
 
   // Responsive check
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    const check = () => setIsDesktop(window.innerWidth > 768);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
