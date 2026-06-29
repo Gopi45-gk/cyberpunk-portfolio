@@ -653,37 +653,41 @@ function SolarSystem({ revealed }: { revealed: boolean }) {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MOBILE TECH CARD — Handles tap interactions, tooltips, floating
+   MOBILE TECH CARD (90x90)
    ════════════════════════════════════════════════════════════════ */
 function MobileTechCard({ item, category }: { item: TechItem; category: string }) {
   const [showTip, setShowTip] = useState(false);
-
-  const handleTap = () => {
-    setShowTip(true);
-    setTimeout(() => setShowTip(false), 2000);
-  };
+  
+  // Organic float timing per card
+  const dur = useMemo(() => 4 + Math.random() * 2, []);
+  const del = useMemo(() => Math.random() * 2, []);
 
   return (
-    <div
-      className="snap-start flex-shrink-0 flex flex-col items-center justify-center rounded-[20px] bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] relative overflow-visible transition-all duration-300"
+    <motion.div
+      onClick={() => setShowTip(!showTip)}
+      animate={{ 
+        y: [0, -6, 0],
+        scale: showTip ? 1.05 : 1
+      }}
+      transition={{
+        y: { duration: dur, delay: del, repeat: Infinity, ease: "easeInOut" },
+        scale: { duration: 0.3 }
+      }}
+      className="flex flex-col items-center justify-center rounded-[18px] bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] relative transition-all cursor-pointer"
       style={{
         width: '90px',
         height: '90px',
-        padding: '16px',
+        padding: '14px',
         boxShadow: showTip ? "0 0 25px rgba(0,243,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)" : "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
-        transform: showTip ? "scale(1.05)" : "scale(1)",
-        animation: `floatAnim ${4 + Math.random() * 2}s ease-in-out infinite`,
-        animationDelay: `${Math.random() * 2}s`,
       }}
-      onClick={handleTap}
     >
-      {/* Top accent */}
-      <div className="absolute top-0 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.25)] to-transparent" />
+      {/* Top accent line */}
+      <div className="absolute top-0 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.3)] to-transparent" />
 
-      <div className="w-10 h-10 flex items-center justify-center mb-3">
+      <div className="w-8 h-8 flex items-center justify-center mb-2">
         <PlanetIcon item={item} />
       </div>
-      <span className="text-[9px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight">
+      <span className="text-[9px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight px-1 break-words w-full">
         {item.name}
       </span>
 
@@ -703,48 +707,40 @@ function MobileTechCard({ item, category }: { item: TechItem; category: string }
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
    MOBILE CATEGORY ROW — Horizontal Animated Slider
    ════════════════════════════════════════════════════════════════ */
 function MobileCategory({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
-  const dir = ring.direction === "cw" ? "normal" : "reverse";
-  const dur = Math.max(30, ring.duration * 0.4); // 30-50s
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={revealed ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.6, delay: 0.05 * index, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={revealed ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, delay: 0.15 + (index * 0.1), ease: "easeOut" }}
       className="w-full relative"
     >
-      {/* Category label */}
-      <div className="flex items-center gap-2 mb-4 px-3">
-        <div className="relative flex-shrink-0">
-          <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_6px_rgba(0,243,255,0.6)]" />
-        </div>
-        <span className="font-mono text-[11px] font-semibold tracking-[0.25em] uppercase text-[var(--text-secondary)]">
+      {/* Category Header */}
+      <div className="flex items-center gap-3 mb-4 px-4 sm:px-6">
+        <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_8px_rgba(0,243,255,0.8)]" />
+        <span className="font-mono text-[12px] font-semibold tracking-[4px] uppercase text-[var(--text-secondary)] drop-shadow-[0_0_5px_rgba(0,243,255,0.3)]">
           {ring.category}
         </span>
         <div className="flex-1 h-[1px] bg-gradient-to-r from-[rgba(0,243,255,0.25)] to-transparent" />
       </div>
 
       {/* Horizontal Slider Wrapper */}
-      <div 
-        className="w-full overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        <div
-          className="flex gap-4 w-max px-3 hover:[animation-play-state:paused] active:[animation-play-state:paused] py-2"
-          style={{
-            animation: `marqueeScroll ${dur}s linear infinite ${dir}`,
-          }}
+      <div className="relative w-full">
+        {/* Subtle fade edges for premium feel */}
+        <div className="absolute top-0 bottom-0 left-0 w-6 bg-gradient-to-r from-[#070b12] to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-6 bg-gradient-to-l from-[#070b12] to-transparent z-10 pointer-events-none" />
+
+        {/* Scrollable track - Native horizontal scroll */}
+        <div 
+          className="flex gap-[12px] px-6 overflow-x-auto snap-x snap-mandatory pb-6 pt-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
         >
-          {[...ring.items, ...ring.items].map((item, j) => (
-            <MobileTechCard key={`${item.name}-${j}`} item={item} category={ring.category} />
+          {ring.items.map((item, j) => (
+            <div key={`${item.name}-${j}`} className="snap-start shrink-0">
+              <MobileTechCard item={item} category={ring.category} />
+            </div>
           ))}
         </div>
       </div>
