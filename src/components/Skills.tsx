@@ -1,46 +1,60 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
+import Image from "next/image";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, TextPlugin);
 }
 
 /* ════════════════════════════════════════════════════════════════
-   TYPES
+   UTILITIES
+   ════════════════════════════════════════════════════════════════ */
+const DI = (icon: string, variant: string = "original") =>
+  `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${icon}/${icon}-${variant}.svg`;
+
+const PlanetIcon = ({ item }: { item: TechItem }) => {
+  const [error, setError] = useState(false);
+  if (!item.icon || error) {
+    return (
+      <div className="w-full h-full flex items-center justify-center font-bold text-[var(--cyan-primary)] opacity-60 font-mono text-sm sm:text-base">
+        {item.name.substring(0, 2).toUpperCase()}
+      </div>
+    );
+  }
+  return (
+    <Image
+      src={item.icon}
+      alt={item.name}
+      width={40}
+      height={40}
+      className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+      onError={() => setError(true)}
+      unoptimized
+    />
+  );
+};
+
+/* ════════════════════════════════════════════════════════════════
+   DATA
    ════════════════════════════════════════════════════════════════ */
 interface TechItem {
   name: string;
   icon: string | null;
 }
 
-interface RingConfig {
+interface CategoryConfig {
   category: string;
   items: TechItem[];
-  radius: number;
-  duration: number;
-  direction: "cw" | "ccw";
 }
 
-/* ════════════════════════════════════════════════════════════════
-   ICON HELPER
-   ════════════════════════════════════════════════════════════════ */
-const DI = (n: string, v = "original") =>
-  `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${n}/${n}-${v}.svg`;
-
-/* ════════════════════════════════════════════════════════════════
-   TECHNOLOGY DATA — 13 ORBITAL RINGS
-   ════════════════════════════════════════════════════════════════ */
-const rings: RingConfig[] = [
+const categories: CategoryConfig[] = [
   {
     category: "PROGRAMMING",
-    radius: 115,
-    duration: 35,
-    direction: "cw",
     items: [
       { name: "Python", icon: DI("python") },
       { name: "C", icon: DI("c") },
@@ -54,9 +68,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "FRONTEND",
-    radius: 160,
-    duration: 45,
-    direction: "ccw",
     items: [
       { name: "HTML5", icon: DI("html5") },
       { name: "CSS3", icon: DI("css3") },
@@ -71,9 +82,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "BACKEND",
-    radius: 205,
-    duration: 55,
-    direction: "cw",
     items: [
       { name: "Node.js", icon: DI("nodejs") },
       { name: "Express.js", icon: DI("express") },
@@ -86,9 +94,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "AI / MACHINE LEARNING",
-    radius: 260,
-    duration: 70,
-    direction: "ccw",
     items: [
       { name: "TensorFlow", icon: DI("tensorflow") },
       { name: "PyTorch", icon: DI("pytorch") },
@@ -113,9 +118,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "DATABASE",
-    radius: 310,
-    duration: 80,
-    direction: "cw",
     items: [
       { name: "MongoDB", icon: DI("mongodb") },
       { name: "MySQL", icon: DI("mysql") },
@@ -127,9 +129,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "CLOUD & DEPLOYMENT",
-    radius: 355,
-    duration: 90,
-    direction: "ccw",
     items: [
       { name: "AWS", icon: DI("amazonwebservices", "original-wordmark") },
       { name: "Azure", icon: DI("azure") },
@@ -141,9 +140,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "DEVOPS & TOOLS",
-    radius: 400,
-    duration: 100,
-    direction: "cw",
     items: [
       { name: "Docker", icon: DI("docker") },
       { name: "Linux", icon: DI("linux") },
@@ -158,9 +154,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "DESIGN & CREATIVE",
-    radius: 445,
-    duration: 110,
-    direction: "ccw",
     items: [
       { name: "Figma", icon: DI("figma") },
       { name: "Canva", icon: DI("canva") },
@@ -174,9 +167,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "IoT & EMERGING TECH",
-    radius: 485,
-    duration: 115,
-    direction: "cw",
     items: [
       { name: "Arduino", icon: DI("arduino") },
       { name: "ESP32", icon: null },
@@ -189,9 +179,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "PLATFORMS",
-    radius: 520,
-    duration: 125,
-    direction: "ccw",
     items: [
       { name: "Google Colab", icon: null },
       { name: "Kaggle", icon: DI("kaggle") },
@@ -201,9 +188,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "MOBILE DEVELOPMENT",
-    radius: 555,
-    duration: 135,
-    direction: "cw",
     items: [
       { name: "React Native", icon: DI("react") },
       { name: "Flutter", icon: DI("flutter") },
@@ -214,9 +198,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "BLOCKCHAIN",
-    radius: 590,
-    duration: 120,
-    direction: "ccw",
     items: [
       { name: "Solidity", icon: DI("solidity") },
       { name: "Ethereum", icon: null },
@@ -228,9 +209,6 @@ const rings: RingConfig[] = [
   },
   {
     category: "CYBER SECURITY",
-    radius: 625,
-    duration: 140,
-    direction: "cw",
     items: [
       { name: "JWT", icon: null },
       { name: "OAuth", icon: DI("oauth") },
@@ -243,727 +221,368 @@ const rings: RingConfig[] = [
 ];
 
 /* ════════════════════════════════════════════════════════════════
-   STARFIELD PARTICLES (Canvas)
+   NEURAL BACKGROUND CANVAS (Lines + Particles)
    ════════════════════════════════════════════════════════════════ */
-function Starfield() {
-  const ref = useRef<HTMLCanvasElement>(null);
+function NeuralBackground({ nodeRefs }: { nodeRefs: React.MutableRefObject<(HTMLDivElement | null)[]> }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const c = ref.current;
+    const c = canvasRef.current;
     if (!c) return;
     const ctx = c.getContext("2d");
     if (!ctx) return;
 
-    let raf: number;
-    interface Star { x: number; y: number; r: number; o: number; vx: number; vy: number; }
-    let stars: Star[] = [];
+    let w = (c.width = window.innerWidth);
+    let h = (c.height = c.parentElement?.offsetHeight || window.innerHeight);
 
-    const resize = () => { c.width = c.offsetWidth; c.height = c.offsetHeight; };
-    resize();
-    window.addEventListener("resize", resize);
+    const handleResize = () => {
+      w = c.width = window.innerWidth;
+      h = c.height = c.parentElement?.offsetHeight || window.innerHeight;
+    };
+    window.addEventListener("resize", handleResize);
 
-    const N = Math.min(120, Math.floor((c.width * c.height) / 12000));
-    for (let i = 0; i < N; i++) {
-      stars.push({
-        x: Math.random() * c.width,
-        y: Math.random() * c.height,
-        r: Math.random() * 1.8 + 0.3,
-        o: Math.random() * 0.5 + 0.05,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: (Math.random() - 0.5) * 0.15,
+    // Floating background particles
+    const particles = Array.from({ length: 60 }).map(() => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      size: Math.random() * 1.5 + 0.5,
+    }));
+
+    // Pulses traveling along lines
+    const pulses: { startX: number; startY: number; endX: number; endY: number; progress: number; speed: number }[] = [];
+
+    let animationId: number;
+
+    const render = () => {
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw background particles
+      ctx.fillStyle = "rgba(0, 243, 255, 0.4)";
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
       });
-    }
 
-    const draw = () => {
-      ctx.clearRect(0, 0, c.width, c.height);
+      // Get valid nodes from the DOM
+      const nodes = nodeRefs.current
+        .filter((el) => el)
+        .map((el) => {
+          const rect = el!.getBoundingClientRect();
+          // We need coordinates relative to the canvas (which is absolute in the section)
+          const sectionRect = c.parentElement!.getBoundingClientRect();
+          return {
+            x: rect.left - sectionRect.left + rect.width / 2,
+            y: rect.top - sectionRect.top + rect.height / 2,
+          };
+        });
 
-      // Connection lines
-      for (let i = 0; i < stars.length; i++) {
-        for (let j = i + 1; j < stars.length; j++) {
-          const dx = stars[i].x - stars[j].x;
-          const dy = stars[i].y - stars[j].y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 120) {
+      // Draw neural lines between nearby nodes
+      ctx.lineWidth = 1;
+      const connectionDist = window.innerWidth < 768 ? 120 : 180;
+      
+      // We only loop through a subset to avoid O(N^2) lag on 120 nodes
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < Math.min(i + 15, nodes.length); j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < connectionDist) {
+            const alpha = 1 - dist / connectionDist;
+            ctx.strokeStyle = `rgba(0, 243, 255, ${alpha * 0.25})`;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(0,243,255,${0.04 * (1 - d / 120)})`;
-            ctx.lineWidth = 0.4;
-            ctx.moveTo(stars[i].x, stars[i].y);
-            ctx.lineTo(stars[j].x, stars[j].y);
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
             ctx.stroke();
+
+            // Randomly spawn pulses on valid lines
+            if (Math.random() < 0.001) {
+              pulses.push({
+                startX: nodes[i].x,
+                startY: nodes[i].y,
+                endX: nodes[j].x,
+                endY: nodes[j].y,
+                progress: 0,
+                speed: 0.01 + Math.random() * 0.02,
+              });
+            }
           }
         }
       }
 
-      // Stars
-      for (const s of stars) {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,243,255,${s.o})`;
-        ctx.fill();
+      // Draw pulses
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        const p = pulses[i];
+        p.progress += p.speed;
+        if (p.progress >= 1) {
+          pulses.splice(i, 1);
+          continue;
+        }
 
-        // Glow
-        const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4);
-        g.addColorStop(0, `rgba(0,243,255,${s.o * 0.25})`);
-        g.addColorStop(1, `rgba(0,243,255,0)`);
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2);
-        ctx.fillStyle = g;
-        ctx.fill();
+        const currX = p.startX + (p.endX - p.startX) * p.progress;
+        const currY = p.startY + (p.endY - p.startY) * p.progress;
 
-        s.x += s.vx;
-        s.y += s.vy;
-        if (s.x < 0 || s.x > c.width) s.vx *= -1;
-        if (s.y < 0 || s.y > c.height) s.vy *= -1;
+        ctx.fillStyle = "rgba(0, 243, 255, 0.9)";
+        ctx.shadowColor = "#00f3ff";
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(currX, currY, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0; // reset
       }
 
-      raf = requestAnimationFrame(draw);
+      animationId = requestAnimationFrame(render);
     };
-    draw();
 
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
+    render();
 
-  return <canvas ref={ref} className="absolute inset-0 w-full h-full pointer-events-none z-0" style={{ opacity: 0.5 }} />;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   CENTER CORE — "GOPIKRISHNA S"
-   ════════════════════════════════════════════════════════════════ */
-const roles = ["AI Engineer", "Full Stack Developer", "ML Engineer", "Innovation Builder"];
-
-function CenterCore() {
-  const [roleIdx, setRoleIdx] = useState(0);
-
-  useEffect(() => {
-    const iv = setInterval(() => setRoleIdx(i => (i + 1) % roles.length), 3000);
-    return () => clearInterval(iv);
-  }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animationId);
+    };
+  }, [nodeRefs]);
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center pointer-events-none select-none">
-      {/* Pulsing rings */}
-      <div className="absolute w-[100px] h-[100px] rounded-full border border-[rgba(0,243,255,0.3)]" style={{ animation: "corePulse 4s ease-in-out infinite" }} />
-      <div className="absolute w-[130px] h-[130px] rounded-full border border-[rgba(0,243,255,0.15)]" style={{ animation: "corePulse 4s ease-in-out 0.5s infinite" }} />
-      <div className="absolute w-[160px] h-[160px] rounded-full border border-[rgba(0,243,255,0.08)]" style={{ animation: "corePulse 4s ease-in-out 1s infinite" }} />
-
-      {/* Core glow */}
-      <div className="absolute w-[80px] h-[80px] rounded-full bg-[rgba(0,243,255,0.15)] blur-[30px]" style={{ animation: "corePulse 4s ease-in-out infinite" }} />
-
-      {/* Inner core */}
-      <div
-        className="relative w-16 h-16 rounded-full flex items-center justify-center border-2 border-[rgba(0,243,255,0.6)] bg-[rgba(5,10,20,0.9)] backdrop-blur-xl"
-        style={{
-          boxShadow: "0 0 30px rgba(0,243,255,0.4), 0 0 60px rgba(0,243,255,0.15), inset 0 0 20px rgba(0,243,255,0.1)",
-          animation: "corePulse 4s ease-in-out infinite",
-        }}
-      >
-        <span
-          className="text-xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-b from-white to-[var(--cyan-primary)]"
-          style={{ textShadow: "0 0 15px rgba(0,243,255,0.8)" }}
-        >
-          GS
-        </span>
-      </div>
-
-      {/* Name */}
-      <span
-        className="mt-3 font-mono text-[0.55rem] sm:text-[0.65rem] tracking-[0.3em] uppercase text-white/90 whitespace-nowrap"
-        style={{ textShadow: "0 0 10px rgba(0,243,255,0.6)" }}
-      >
-        Gopikrishna S
-      </span>
-
-      {/* Cycling role */}
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={roleIdx}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.4 }}
-          className="mt-1 font-mono text-[0.45rem] sm:text-[0.5rem] tracking-[0.2em] uppercase text-[var(--cyan-primary)] whitespace-nowrap"
-        >
-          {roles[roleIdx]}
-        </motion.span>
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   PLANET ICON — with fallback on error
-   ════════════════════════════════════════════════════════════════ */
-function PlanetIcon({ item }: { item: TechItem }) {
-  const [err, setErr] = useState(false);
-
-  if (!item.icon || err) {
-    return (
-      <div className="w-full h-full rounded-lg border border-[rgba(0,243,255,0.35)] bg-[rgba(0,243,255,0.06)] flex items-center justify-center text-[var(--cyan-primary)] font-mono font-bold text-[10px] sm:text-xs shadow-[0_0_8px_rgba(0,243,255,0.25)]">
-        {item.name.charAt(0)}
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={item.icon}
-      alt={item.name}
-      loading="lazy"
-      onError={() => setErr(true)}
-      className="max-w-full max-h-full object-contain drop-shadow-[0_0_4px_rgba(0,243,255,0.3)]"
+    <canvas
+      ref={canvasRef}
+      className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none opacity-60"
     />
   );
 }
 
 /* ════════════════════════════════════════════════════════════════
-   TECH PLANET — a single orbiting technology
+   TECH NODE (Glassmorphism Hologram Card)
    ════════════════════════════════════════════════════════════════ */
-function TechPlanet({
+function TechNode({
   item,
-  angle,
-  radius,
-  orbitDuration,
-  direction,
   category,
-  isPaused,
-  onHover,
-  onLeave,
+  index,
+  nodeRef,
 }: {
   item: TechItem;
-  angle: number;
-  radius: number;
-  orbitDuration: number;
-  direction: "cw" | "ccw";
   category: string;
-  isPaused: boolean;
-  onHover: () => void;
-  onLeave: () => void;
+  index: number;
+  nodeRef: (el: HTMLDivElement | null) => void;
 }) {
   const [showTip, setShowTip] = useState(false);
 
-  // Counter-rotation: reverse of orbit direction to keep planet upright
-  const counterAnim = direction === "cw"
-    ? `orbitSpin ${orbitDuration}s linear infinite reverse`
-    : `orbitSpin ${orbitDuration}s linear infinite`;
+  // Organic random offsets to break the grid feel
+  const offsetX = useMemo(() => (Math.random() - 0.5) * 30, []);
+  const offsetY = useMemo(() => (Math.random() - 0.5) * 30, []);
+  const dur = useMemo(() => 4 + Math.random() * 2, []);
+  const del = useMemo(() => Math.random() * 2, []);
+  
+  // Opacity breathing
+  const breatheDur = useMemo(() => 3 + Math.random() * 2, []);
 
   return (
-    <div
-      className="absolute"
+    <motion.div
+      ref={nodeRef}
+      initial={{ opacity: 0, scale: 0.8, y: 30 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.8, delay: (index % 10) * 0.05 }}
       style={{
-        top: "50%",
-        left: "50%",
-        width: 0,
-        height: 0,
-        transform: `rotate(${angle}deg) translateX(${radius}px) rotate(${-angle}deg)`,
+        transform: `translate(${offsetX}px, ${offsetY}px)`,
+        zIndex: showTip ? 50 : 10,
       }}
+      className="relative z-10"
     >
-      {/* Counter-rotating wrapper */}
-      <div
-        style={{
-          animation: counterAnim,
-          animationPlayState: isPaused ? "paused" : "running",
+      <motion.div
+        animate={{ 
+          y: [0, -6, 0],
+          opacity: [0.85, 1, 0.85]
         }}
+        transition={{
+          y: { duration: dur, delay: del, repeat: Infinity, ease: "easeInOut" },
+          opacity: { duration: breatheDur, delay: del, repeat: Infinity, ease: "easeInOut" }
+        }}
+        onHoverStart={() => setShowTip(true)}
+        onHoverEnd={() => setShowTip(false)}
+        onClick={() => setShowTip(!showTip)}
+        className="group relative cursor-pointer"
       >
         <motion.div
-          className="relative flex flex-col items-center justify-center rounded-xl bg-[rgba(8,12,20,0.75)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] overflow-hidden group"
+          className="flex flex-col items-center justify-center rounded-[18px] bg-[rgba(8,12,20,0.65)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] w-[72px] h-[72px] sm:w-[90px] sm:h-[90px] transition-colors"
           style={{
-            width: 52,
-            height: 52,
-            marginLeft: -26,
-            marginTop: -26,
-            boxShadow: "0 0 12px rgba(0,243,255,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
+            boxShadow: showTip 
+              ? "0 0 25px rgba(0,243,255,0.4), inset 0 1px 0 rgba(255,255,255,0.2)" 
+              : "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
           whileHover={{
-            scale: 1.08,
+            scale: 1.1,
             rotate: 2,
-            boxShadow: "0 0 35px rgba(0,243,255,0.5), 0 0 70px rgba(0,243,255,0.15), inset 0 0 20px rgba(0,243,255,0.1)",
-            borderColor: "rgba(0,243,255,0.8)",
+            borderColor: "rgba(0, 243, 255, 0.6)",
           }}
-          transition={{ type: "spring", stiffness: 350, damping: 20 }}
-          onMouseEnter={() => { setShowTip(true); onHover(); }}
-          onMouseLeave={() => { setShowTip(false); onLeave(); }}
         >
-          {/* Top accent */}
-          <div className="absolute top-0 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.3)] to-transparent group-hover:via-[rgba(0,243,255,0.8)] transition-all duration-300" />
-
-          {/* Ambient glow */}
-          <div className="absolute inset-0 bg-[rgba(0,243,255,0.03)] group-hover:bg-[rgba(0,243,255,0.08)] transition-all duration-300 rounded-xl" />
-
-          {/* Icon */}
-          <div className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center z-10 group-hover:scale-110 transition-transform duration-300">
+          {/* Top glow accent */}
+          <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.4)] to-transparent" />
+          
+          <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center mb-1 sm:mb-2 transition-transform group-hover:scale-110">
             <PlanetIcon item={item} />
           </div>
-
-          {/* Name */}
-          <span className="text-[5px] sm:text-[6px] font-mono text-[var(--text-secondary)] text-center tracking-wider uppercase z-10 group-hover:text-[var(--cyan-primary)] transition-colors duration-300 mt-0.5 leading-tight px-0.5 truncate max-w-full">
+          <span className="text-[8px] sm:text-[9.5px] font-mono text-[var(--text-secondary)] group-hover:text-white tracking-wider uppercase text-center leading-tight px-1 break-words w-full transition-colors">
             {item.name}
           </span>
         </motion.div>
 
-        {/* Tooltip */}
+        {/* Floating Tooltip */}
         <AnimatePresence>
           {showTip && (
             <motion.div
-              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 8, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
-              className="absolute left-1/2 -translate-x-1/2 top-[60px] z-50 pointer-events-none"
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              className="absolute -top-[50px] left-1/2 -translate-x-1/2 z-50 pointer-events-none"
             >
-              <div
-                className="px-3 py-2 rounded-lg bg-[rgba(5,10,20,0.95)] backdrop-blur-xl border border-[rgba(0,243,255,0.3)] whitespace-nowrap"
-                style={{ boxShadow: "0 0 20px rgba(0,243,255,0.2)" }}
-              >
-                <div className="text-[10px] font-mono text-white font-semibold tracking-wide">{item.name}</div>
-                <div className="text-[8px] font-mono text-[var(--cyan-primary)] tracking-wider uppercase mt-0.5 opacity-70">{category}</div>
+              <div className="px-4 py-2 rounded-lg bg-[rgba(5,10,20,0.95)] backdrop-blur-xl border border-[rgba(0,243,255,0.4)] whitespace-nowrap shadow-[0_0_20px_rgba(0,243,255,0.3)]">
+                <div className="text-[11px] font-mono text-white font-semibold text-center tracking-wide">{item.name}</div>
+                <div className="text-[8px] font-mono text-[var(--cyan-primary)] uppercase mt-1 opacity-80 text-center tracking-[0.2em]">{category}</div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   ORBITAL RING — one rotating ring with its planets
-   ════════════════════════════════════════════════════════════════ */
-function OrbitalRing({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
-  const [paused, setPaused] = useState(false);
-
-  const orbitAnim = ring.direction === "cw"
-    ? `orbitSpin ${ring.duration}s linear infinite`
-    : `orbitSpin ${ring.duration}s linear infinite reverse`;
-
-
-  return (
-    <>
-      {/* Rotating container for planets */}
-      <div
-        className="absolute"
-        style={{
-          top: "50%",
-          left: "50%",
-          width: 0,
-          height: 0,
-          animation: orbitAnim,
-          animationPlayState: paused ? "paused" : "running",
-          opacity: revealed ? 1 : 0,
-          transition: "opacity 0.8s ease",
-          transitionDelay: `${0.3 + index * 0.15}s`,
-        }}
-      >
-        {ring.items.map((item, j) => {
-          const angle = (360 / ring.items.length) * j;
-          return (
-            <TechPlanet
-              key={item.name}
-              item={item}
-              angle={angle}
-              radius={ring.radius}
-              orbitDuration={ring.duration}
-              direction={ring.direction}
-              category={ring.category}
-              isPaused={paused}
-              onHover={() => setPaused(true)}
-              onLeave={() => setPaused(false)}
-            />
-          );
-        })}
-      </div>
-    </>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   SOLAR SYSTEM — Desktop view (>= 1024px)
-   ════════════════════════════════════════════════════════════════ */
-function SolarSystem({ revealed }: { revealed: boolean }) {
-  const maxR = rings[rings.length - 1].radius;
-  const size = (maxR + 40) * 2; // Container size in px
-
-  return (
-    <div className="relative mx-auto" style={{ width: size, height: size, maxWidth: "100%" }}>
-      {/* Scale container to fit viewport */}
-      <div
-        className="absolute inset-0 origin-center"
-        style={{
-          width: size,
-          height: size,
-          transform: `scale(var(--solar-scale, 1))`,
-        }}
-      >
-        {/* SVG layer for orbital path rings */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox={`0 0 ${size} ${size}`}
-          style={{ opacity: revealed ? 1 : 0, transition: "opacity 1s ease 0.5s" }}
-        >
-          <g transform={`translate(${size / 2}, ${size / 2})`}>
-            {rings.map((ring, i) => (
-              <circle
-                key={ring.category}
-                cx="0"
-                cy="0"
-                r={ring.radius}
-                fill="none"
-                stroke={`rgba(0,243,255,${Math.max(0.06, 0.2 - i * 0.01)})`}
-                strokeWidth="1"
-                strokeDasharray="3 8"
-                style={{ animation: `energyFlow ${ring.duration * 0.4}s linear infinite` }}
-              />
-            ))}
-          </g>
-        </svg>
-
-        {/* Center core */}
-        <CenterCore />
-
-        {/* Orbital rings with planets */}
-        {rings.map((ring, i) => (
-          <OrbitalRing key={ring.category} ring={ring} index={i} revealed={revealed} />
-        ))}
-
-        {/* Ring category labels */}
-        {rings.map((ring, i) => {
-          const labelAngle = -45; // Position label at -45 degrees
-          const rad = (labelAngle * Math.PI) / 180;
-          const lx = Math.cos(rad) * ring.radius;
-          const ly = Math.sin(rad) * ring.radius;
-          return (
-            <div
-              key={`label-${ring.category}`}
-              className="absolute pointer-events-none z-20"
-              style={{
-                top: `calc(50% + ${ly}px)`,
-                left: `calc(50% + ${lx}px)`,
-                opacity: revealed ? 0.35 : 0,
-                transition: `opacity 1s ease ${0.5 + i * 0.1}s`,
-              }}
-            >
-              <span className="font-mono text-[5px] sm:text-[6px] tracking-[0.2em] uppercase text-[var(--cyan-primary)] whitespace-nowrap">
-                {ring.category}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
-   MOBILE TECH CARD (90x90)
-   ════════════════════════════════════════════════════════════════ */
-function MobileTechCard({ item, category }: { item: TechItem; category: string }) {
-  const [showTip, setShowTip] = useState(false);
-  
-  // Organic float timing per card
-  const dur = useMemo(() => 4 + Math.random() * 2, []);
-  const del = useMemo(() => Math.random() * 2, []);
-
-  return (
-    <motion.div
-      onClick={() => setShowTip(!showTip)}
-      animate={{ 
-        y: [0, -6, 0],
-        scale: showTip ? 1.05 : 1
-      }}
-      transition={{
-        y: { duration: dur, delay: del, repeat: Infinity, ease: "easeInOut" },
-        scale: { duration: 0.3 }
-      }}
-      className="flex flex-col items-center justify-center rounded-[18px] bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] relative transition-all cursor-pointer"
-      style={{
-        width: '90px',
-        height: '90px',
-        padding: '14px',
-        boxShadow: showTip ? "0 0 25px rgba(0,243,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)" : "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
-      }}
-    >
-      {/* Top accent line */}
-      <div className="absolute top-0 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.3)] to-transparent" />
-
-      <div className="w-8 h-8 flex items-center justify-center mb-2">
-        <PlanetIcon item={item} />
-      </div>
-      <span className="text-[9px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight px-1 break-words w-full">
-        {item.name}
-      </span>
-
-      {/* Tooltip */}
-      <AnimatePresence>
-        {showTip && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute -top-[45px] left-1/2 -translate-x-1/2 z-50 pointer-events-none"
-          >
-            <div className="px-3 py-1.5 rounded-lg bg-[rgba(5,10,20,0.95)] backdrop-blur-xl border border-[rgba(0,243,255,0.4)] whitespace-nowrap shadow-[0_0_15px_rgba(0,243,255,0.25)]">
-              <div className="text-[10px] font-mono text-white font-semibold text-center">{item.name}</div>
-              <div className="text-[7.5px] font-mono text-[var(--cyan-primary)] uppercase mt-0.5 opacity-80 text-center tracking-widest">{category}</div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </motion.div>
   );
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MOBILE CATEGORY ROW — Horizontal Animated Slider
-   ════════════════════════════════════════════════════════════════ */
-function MobileCategory({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={revealed ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay: 0.15 + (index * 0.1), ease: "easeOut" }}
-      className="w-full relative"
-    >
-      {/* Category Header */}
-      <div className="flex items-center gap-3 mb-4 px-4 sm:px-6">
-        <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_8px_rgba(0,243,255,0.8)]" />
-        <span className="font-mono text-[12px] font-semibold tracking-[4px] uppercase text-[var(--text-secondary)] drop-shadow-[0_0_5px_rgba(0,243,255,0.3)]">
-          {ring.category}
-        </span>
-        <div className="flex-1 h-[1px] bg-gradient-to-r from-[rgba(0,243,255,0.25)] to-transparent" />
-      </div>
-
-      {/* Horizontal Slider Wrapper */}
-      <div className="relative w-full">
-        {/* Subtle fade edges for premium feel */}
-        <div className="absolute top-0 bottom-0 left-0 w-6 bg-gradient-to-r from-[#070b12] to-transparent z-10 pointer-events-none" />
-        <div className="absolute top-0 bottom-0 right-0 w-6 bg-gradient-to-l from-[#070b12] to-transparent z-10 pointer-events-none" />
-
-        {/* Scrollable track - Native horizontal scroll */}
-        <div 
-          className="flex gap-[12px] px-6 overflow-x-auto snap-x snap-mandatory pb-6 pt-4"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-        >
-          {ring.items.map((item, j) => (
-            <div key={`${item.name}-${j}`} className="snap-start shrink-0">
-              <MobileTechCard item={item} category={ring.category} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-
-/* ════════════════════════════════════════════════════════════════
-   MAIN SKILLS COMPONENT
+   MAIN SKILLS COMPONENT (Constellation Ecosystem)
    ════════════════════════════════════════════════════════════════ */
 export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subRef = useRef<HTMLSpanElement>(null);
-  const systemRef = useRef<HTMLDivElement>(null);
-  const [isDesktop, setIsDesktop] = useState(true);
-  const [revealed, setRevealed] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  
+  // We collect refs of all tech cards to pass to the canvas for line drawing
+  const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Responsive check
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth > 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  // Dynamic solar system scaling
-  useEffect(() => {
-    const updateScale = () => {
-      if (!systemRef.current) return;
-      const maxR = rings[rings.length - 1].radius;
-      const idealSize = (maxR + 40) * 2;
-      const containerW = systemRef.current.parentElement?.offsetWidth || idealSize;
-      const scale = Math.min(1, containerW / idealSize);
-      systemRef.current.style.setProperty("--solar-scale", String(scale));
-      // Update container height to match scaled size
-      systemRef.current.style.height = `${idealSize * scale}px`;
-    };
-    if (isDesktop) {
-      updateScale();
-      window.addEventListener("resize", updateScale);
-      return () => window.removeEventListener("resize", updateScale);
+  // Reset refs on re-render
+  nodeRefs.current = [];
+  const addNodeRef = useCallback((el: HTMLDivElement | null) => {
+    if (el && !nodeRefs.current.includes(el)) {
+      nodeRefs.current.push(el);
     }
-  }, [isDesktop]);
-
-  // Mouse parallax
-  const handleMouse = useCallback((e: MouseEvent) => {
-    if (!sectionRef.current) return;
-    const r = sectionRef.current.getBoundingClientRect();
-    setMousePos({
-      x: (e.clientX - r.left) / r.width - 0.5,
-      y: (e.clientY - r.top) / r.height - 0.5,
-    });
   }, []);
 
-  useEffect(() => {
-    const s = sectionRef.current;
-    if (!s) return;
-    s.addEventListener("mousemove", handleMouse);
-    return () => s.removeEventListener("mousemove", handleMouse);
-  }, [handleMouse]);
-
-  // Apply parallax
-  useEffect(() => {
-    if (!systemRef.current || !isDesktop) return;
-    gsap.to(systemRef.current, {
-      rotateX: -mousePos.y * 4,
-      rotateY: mousePos.x * 4,
-      duration: 1.5,
-      ease: "power2.out",
-      overwrite: "auto",
-    });
-  }, [mousePos, isDesktop]);
-
-  // GSAP scroll animations
+  // Title GSAP animation
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title reveal
       if (titleRef.current) {
-        gsap.fromTo(titleRef.current,
-          { scale: 0, opacity: 0 },
+        gsap.fromTo(
+          titleRef.current,
+          { opacity: 0, y: 40, scale: 0.95 },
           {
-            scale: 1, opacity: 1, duration: 1.5,
-            ease: "elastic.out(1,0.75)",
-            scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.2,
+            ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
           }
         );
       }
-
-      // Typing subtitle
       if (subRef.current) {
         gsap.set(subRef.current, { text: "" });
         gsap.to(subRef.current, {
           text: { value: "INITIALIZING TECHNOLOGY ECOSYSTEM...", preserveSpaces: true },
-          duration: 2.5, ease: "none", delay: 0.8,
+          duration: 2,
+          ease: "none",
           scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
         });
       }
-
-      // Reveal flag
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top 70%",
-        once: true,
-        onEnter: () => setRevealed(true),
-      });
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 bg-[var(--bg-void)] text-[var(--text-primary)] py-16 sm:py-20 overflow-hidden"
-      style={{ perspective: "1200px" }}
+      className="relative w-full min-h-screen bg-[#05070d] py-32 overflow-hidden flex flex-col items-center font-mono selection:bg-[#00f3ff] selection:text-black"
     >
-      {/* Starfield background */}
-      <Starfield />
+      {/* Background Layer */}
+      <NeuralBackground nodeRefs={nodeRefs} />
+      
+      {/* Subtle radial glow in the center */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-[radial-gradient(circle_at_center,rgba(0,243,255,0.03)_0%,transparent_70%)] pointer-events-none rounded-full blur-[100px]" />
 
-      {/* Ambient glow orbs */}
-      <div className="absolute top-[20%] left-[15%] w-[400px] h-[400px] rounded-full bg-[rgba(0,243,255,0.03)] blur-[100px] pointer-events-none z-0" />
-      <div className="absolute bottom-[20%] right-[15%] w-[350px] h-[350px] rounded-full bg-[rgba(0,100,255,0.04)] blur-[80px] pointer-events-none z-0" />
-      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[rgba(0,243,255,0.02)] blur-[120px] pointer-events-none z-0" />
-
-      {/* Content container with parallax */}
-      <div
-        ref={systemRef}
-        className="relative z-10 mx-auto px-4 sm:px-6"
-        style={{ transformStyle: "preserve-3d", maxWidth: "1400px" }}
-      >
-        {/* ─── HEADER ─── */}
-        <div className="text-center mb-10 sm:mb-14">
-          {/* Top decoration */}
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-[1px] w-16 sm:w-24 bg-gradient-to-r from-transparent to-[rgba(0,243,255,0.5)]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_10px_rgba(0,243,255,0.8)]" />
-            <div className="h-[1px] w-16 sm:w-24 bg-gradient-to-l from-transparent to-[rgba(0,243,255,0.5)]" />
-          </div>
-
-          <h2
-            ref={titleRef}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-widest font-mono text-transparent bg-clip-text bg-gradient-to-b from-white via-[rgba(200,240,255,0.95)] to-[rgba(100,180,220,0.6)] mb-4 sm:mb-5 will-change-transform"
-            style={{
-              textShadow: "0 0 30px rgba(0,243,255,0.8), 0 0 60px rgba(0,243,255,0.4), 0 0 100px rgba(0,243,255,0.2)",
-            }}
-          >
-            TECH STACK
-          </h2>
-
-          {/* Subtitle typing */}
-          <div className="font-mono text-[10px] sm:text-xs md:text-sm text-[var(--cyan-primary)] tracking-[0.2em] sm:tracking-[0.3em] uppercase h-5 sm:h-7 flex justify-center items-center">
-            <span className="inline-flex items-center gap-0.5">
-              <span ref={subRef}></span>
-              <span className="animate-pulse text-[var(--cyan-primary)]">_</span>
-            </span>
-          </div>
-
-          {/* Bottom decoration */}
-          <div className="flex items-center justify-center gap-3 mt-5">
-            <div className="h-[1px] w-20 sm:w-32 bg-gradient-to-r from-transparent to-[rgba(0,243,255,0.3)]" />
-            <div className="w-1 h-1 rounded-full bg-[rgba(0,243,255,0.5)]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_8px_rgba(0,243,255,0.6)]" />
-            <div className="w-1 h-1 rounded-full bg-[rgba(0,243,255,0.5)]" />
-            <div className="h-[1px] w-20 sm:w-32 bg-gradient-to-l from-transparent to-[rgba(0,243,255,0.3)]" />
-          </div>
+      {/* HEADER */}
+      <div className="relative z-20 flex flex-col items-center text-center mb-24 px-4">
+        <div className="flex items-center gap-4 mb-6 opacity-70">
+          <div className="h-[1px] w-12 sm:w-24 bg-gradient-to-r from-transparent to-[var(--cyan-primary)]" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_10px_#00f3ff]" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_10px_#00f3ff]" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_10px_#00f3ff]" />
+          <div className="h-[1px] w-12 sm:w-24 bg-gradient-to-l from-transparent to-[var(--cyan-primary)]" />
         </div>
 
-        {/* ─── SOLAR SYSTEM (Desktop) / MARQUEE ROWS (Mobile) ─── */}
-        {isDesktop ? (
-          <SolarSystem revealed={revealed} />
-        ) : (
-          <div className="flex flex-col gap-5 px-1">
-            {rings.map((ring, i) => (
-              <MobileCategory key={ring.category} ring={ring} index={i} revealed={revealed} />
-            ))}
-          </div>
-        )}
-
-        {/* ─── FOOTER DECORATION ─── */}
-        <div className="flex items-center justify-center gap-3 mt-12 sm:mt-16 opacity-40">
-          <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[rgba(0,243,255,0.4)]" />
-          <span className="font-mono text-[7px] sm:text-[8px] tracking-[0.4em] text-[rgba(0,243,255,0.5)] uppercase">
-            {rings.reduce((a, r) => a + r.items.length, 0)} technologies loaded
-          </span>
-          <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[rgba(0,243,255,0.4)]" />
+        <h2
+          ref={titleRef}
+          className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-[rgba(255,255,255,0.5)] mb-6 drop-shadow-[0_0_30px_rgba(0,243,255,0.3)] uppercase tracking-tight"
+        >
+          Tech Stack
+        </h2>
+        
+        <div className="flex items-center gap-2">
+          <span
+            ref={subRef}
+            className="text-sm md:text-base text-[var(--cyan-dim)] font-mono tracking-[0.25em]"
+          ></span>
+          <span className="w-2 h-4 bg-[var(--cyan-primary)] animate-pulse shadow-[0_0_8px_#00f3ff]" />
         </div>
       </div>
 
-      {/* ─── INJECTED KEYFRAMES ─── */}
-      <style>{`
-        @keyframes orbitSpin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
+      {/* CONSTELLATION ECOSYSTEM */}
+      <div className="relative z-10 w-full max-w-[1600px] px-4 sm:px-12 mx-auto flex flex-col gap-24 sm:gap-32 pb-32">
+        {categories.map((cat, catIndex) => (
+          <div key={cat.category} className="flex flex-col items-center w-full">
+            
+            {/* Category Cluster Title */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8 }}
+              className="flex items-center gap-4 mb-12 sm:mb-16"
+            >
+              <div className="h-[1px] w-16 sm:w-32 bg-gradient-to-r from-transparent to-[rgba(0,243,255,0.3)]" />
+              <div className="relative flex items-center justify-center">
+                <div className="absolute w-6 h-6 bg-[rgba(0,243,255,0.1)] rounded-full animate-ping" />
+                <div className="w-2 h-2 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_12px_#00f3ff]" />
+              </div>
+              <h3 className="font-mono text-sm sm:text-base font-semibold tracking-[0.3em] uppercase text-[var(--cyan-primary)] drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]">
+                {cat.category}
+              </h3>
+              <div className="h-[1px] w-16 sm:w-32 bg-gradient-to-l from-transparent to-[rgba(0,243,255,0.3)]" />
+            </motion.div>
 
-        @keyframes corePulse {
-          0%, 100% { transform: scale(1);   opacity: 0.7; }
-          50%      { transform: scale(1.08); opacity: 1;   }
-        }
-
-        @keyframes energyFlow {
-          from { stroke-dashoffset: 0; }
-          to   { stroke-dashoffset: -80; }
-        }
-
-        @keyframes marqueeScroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-
-        @keyframes floatAnim {
-          0%, 100% { transform: translateY(0); }
-          50%      { transform: translateY(-6px); }
-        }
-      `}</style>
+            {/* Scattered Flex Wrap Cluster */}
+            <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10 w-full max-w-[1200px]">
+              {cat.items.map((item, i) => (
+                <TechNode
+                  key={`${item.name}-${i}`}
+                  item={item}
+                  category={cat.category}
+                  index={i}
+                  nodeRef={addNodeRef}
+                />
+              ))}
+            </div>
+            
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
