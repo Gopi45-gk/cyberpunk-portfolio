@@ -707,6 +707,11 @@ function MobileTechCard({ item, category }: { item: TechItem; category: string }
           </motion.div>
         )}
       </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
    MOBILE CATEGORY ROW — Horizontal Animated Slider
    ════════════════════════════════════════════════════════════════ */
 function MobileCategory({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
