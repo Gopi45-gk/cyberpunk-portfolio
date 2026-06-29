@@ -647,56 +647,55 @@ function SolarSystem({ revealed }: { revealed: boolean }) {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MOBILE MARQUEE ROW — horizontal auto-scrolling strip
+   MOBILE CATEGORY ROW — wrapping grid (all items always visible)
    ════════════════════════════════════════════════════════════════ */
-function MobileMarquee({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
-  const dir = ring.direction === "cw" ? "normal" : "reverse";
-  const dur = ring.duration * 0.6; // Faster on mobile
-
+function MobileCategory({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: ring.direction === "cw" ? -40 : 40 }}
-      animate={revealed ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.6, delay: 0.1 * index, ease: "easeOut" }}
-      className="w-full overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={revealed ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: 0.08 * index, ease: "easeOut" }}
+      className="w-full"
     >
       {/* Category label */}
-      <div className="flex items-center gap-2 mb-2 px-1">
-        <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_6px_rgba(0,243,255,0.6)]" />
+      <div className="flex items-center gap-2 mb-3 px-1">
+        <div className="relative flex-shrink-0">
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_6px_rgba(0,243,255,0.6)]" />
+        </div>
         <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-[var(--text-secondary)]">
           {ring.category}
         </span>
         <div className="flex-1 h-[1px] bg-gradient-to-r from-[rgba(0,243,255,0.12)] to-transparent" />
       </div>
 
-      {/* Marquee track */}
-      <div className="relative overflow-hidden">
-        <div
-          className="flex gap-3 w-max"
-          style={{
-            animation: `marqueeScroll ${dur}s linear infinite ${dir}`,
-          }}
-        >
-          {/* Content + duplicate for seamless loop */}
-          {[...ring.items, ...ring.items].map((item, j) => (
-            <div
-              key={`${item.name}-${j}`}
-              className="flex-shrink-0 flex flex-col items-center justify-center w-[68px] h-[68px] rounded-xl bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] overflow-hidden"
-              style={{ boxShadow: "0 0 10px rgba(0,243,255,0.05)" }}
-            >
-              <div className="w-7 h-7 flex items-center justify-center mb-1">
-                <PlanetIcon item={item} />
-              </div>
-              <span className="text-[5.5px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight px-0.5">
-                {item.name}
-              </span>
+      {/* Wrapping grid — all items visible */}
+      <div className="flex flex-wrap gap-2.5 px-1">
+        {ring.items.map((item) => (
+          <div
+            key={item.name}
+            className="flex flex-col items-center justify-center rounded-xl bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] overflow-hidden"
+            style={{
+              width: 72,
+              height: 72,
+              boxShadow: "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
+            }}
+          >
+            {/* Top accent */}
+            <div className="absolute top-0 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.25)] to-transparent" />
+
+            <div className="w-7 h-7 flex items-center justify-center mb-1">
+              <PlanetIcon item={item} />
             </div>
-          ))}
-        </div>
+            <span className="text-[6px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight px-1">
+              {item.name}
+            </span>
+          </div>
+        ))}
       </div>
     </motion.div>
   );
 }
+
 
 /* ════════════════════════════════════════════════════════════════
    MAIN SKILLS COMPONENT
@@ -866,7 +865,7 @@ export default function Skills() {
         ) : (
           <div className="flex flex-col gap-5 px-1">
             {rings.map((ring, i) => (
-              <MobileMarquee key={ring.category} ring={ring} index={i} revealed={revealed} />
+              <MobileCategory key={ring.category} ring={ring} index={i} revealed={revealed} />
             ))}
           </div>
         )}
@@ -896,11 +895,6 @@ export default function Skills() {
         @keyframes energyFlow {
           from { stroke-dashoffset: 0; }
           to   { stroke-dashoffset: -80; }
-        }
-
-        @keyframes marqueeScroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
         }
       `}</style>
     </section>
