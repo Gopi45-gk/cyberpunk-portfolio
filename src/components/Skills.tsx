@@ -647,50 +647,100 @@ function SolarSystem({ revealed }: { revealed: boolean }) {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MOBILE CATEGORY ROW — wrapping grid (all items always visible)
+   MOBILE TECH CARD — Handles tap interactions, tooltips, floating
+   ════════════════════════════════════════════════════════════════ */
+function MobileTechCard({ item, category }: { item: TechItem; category: string }) {
+  const [showTip, setShowTip] = useState(false);
+
+  const handleTap = () => {
+    setShowTip(true);
+    setTimeout(() => setShowTip(false), 2000);
+  };
+
+  return (
+    <div
+      className="snap-start flex-shrink-0 flex flex-col items-center justify-center rounded-[18px] bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] relative overflow-visible transition-all duration-300"
+      style={{
+        width: '100px',
+        height: '110px',
+        padding: '16px',
+        boxShadow: showTip ? "0 0 25px rgba(0,243,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)" : "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
+        transform: showTip ? "scale(1.05)" : "scale(1)",
+        animation: `floatAnim ${4 + Math.random() * 2}s ease-in-out infinite`,
+        animationDelay: `${Math.random() * 2}s`,
+      }}
+      onClick={handleTap}
+    >
+      {/* Top accent */}
+      <div className="absolute top-0 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.25)] to-transparent" />
+
+      <div className="w-10 h-10 flex items-center justify-center mb-3">
+        <PlanetIcon item={item} />
+      </div>
+      <span className="text-[9px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight">
+        {item.name}
+      </span>
+
+      {/* Tooltip */}
+      <AnimatePresence>
+        {showTip && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            className="absolute -top-[45px] left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+          >
+            <div className="px-3 py-1.5 rounded-lg bg-[rgba(5,10,20,0.95)] backdrop-blur-xl border border-[rgba(0,243,255,0.4)] whitespace-nowrap shadow-[0_0_15px_rgba(0,243,255,0.25)]">
+              <div className="text-[10px] font-mono text-white font-semibold text-center">{item.name}</div>
+              <div className="text-[7.5px] font-mono text-[var(--cyan-primary)] uppercase mt-0.5 opacity-80 text-center tracking-widest">{category}</div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE CATEGORY ROW — Horizontal Animated Slider
    ════════════════════════════════════════════════════════════════ */
 function MobileCategory({ ring, index, revealed }: { ring: RingConfig; index: number; revealed: boolean }) {
+  const dir = ring.direction === "cw" ? "normal" : "reverse";
+  const dur = Math.max(30, ring.duration * 0.4); // 30-50s
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={revealed ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: 0.08 * index, ease: "easeOut" }}
-      className="w-full"
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={revealed ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ duration: 0.6, delay: 0.05 * index, ease: "easeOut" }}
+      className="w-full relative"
     >
       {/* Category label */}
-      <div className="flex items-center gap-2 mb-3 px-1">
+      <div className="flex items-center gap-2 mb-4 px-3">
         <div className="relative flex-shrink-0">
           <div className="w-1.5 h-1.5 rounded-full bg-[var(--cyan-primary)] shadow-[0_0_6px_rgba(0,243,255,0.6)]" />
         </div>
-        <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-[var(--text-secondary)]">
+        <span className="font-mono text-[11px] font-semibold tracking-[0.25em] uppercase text-[var(--text-secondary)]">
           {ring.category}
         </span>
-        <div className="flex-1 h-[1px] bg-gradient-to-r from-[rgba(0,243,255,0.12)] to-transparent" />
+        <div className="flex-1 h-[1px] bg-gradient-to-r from-[rgba(0,243,255,0.25)] to-transparent" />
       </div>
 
-      {/* Wrapping grid — all items visible */}
-      <div className="flex flex-wrap gap-2.5 px-1">
-        {ring.items.map((item) => (
-          <div
-            key={item.name}
-            className="flex flex-col items-center justify-center rounded-xl bg-[rgba(8,12,20,0.7)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] overflow-hidden"
-            style={{
-              width: 72,
-              height: 72,
-              boxShadow: "0 0 10px rgba(0,243,255,0.05), inset 0 1px 0 rgba(255,255,255,0.03)",
-            }}
-          >
-            {/* Top accent */}
-            <div className="absolute top-0 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,243,255,0.25)] to-transparent" />
-
-            <div className="w-7 h-7 flex items-center justify-center mb-1">
-              <PlanetIcon item={item} />
-            </div>
-            <span className="text-[6px] font-mono text-[var(--text-secondary)] tracking-wider uppercase text-center leading-tight px-1">
-              {item.name}
-            </span>
-          </div>
-        ))}
+      {/* Horizontal Slider Wrapper */}
+      <div 
+        className="w-full overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <div
+          className="flex gap-4 w-max px-3 hover:[animation-play-state:paused] active:[animation-play-state:paused] py-2"
+          style={{
+            animation: `marqueeScroll ${dur}s linear infinite ${dir}`,
+          }}
+        >
+          {[...ring.items, ...ring.items].map((item, j) => (
+            <MobileTechCard key={`${item.name}-${j}`} item={item} category={ring.category} />
+          ))}
+        </div>
       </div>
     </motion.div>
   );
@@ -895,6 +945,16 @@ export default function Skills() {
         @keyframes energyFlow {
           from { stroke-dashoffset: 0; }
           to   { stroke-dashoffset: -80; }
+        }
+
+        @keyframes marqueeScroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+
+        @keyframes floatAnim {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-6px); }
         }
       `}</style>
     </section>
