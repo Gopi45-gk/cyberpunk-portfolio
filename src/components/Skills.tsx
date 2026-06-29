@@ -529,26 +529,9 @@ function OrbitalRing({ ring, index, revealed }: { ring: RingConfig; index: numbe
     ? `orbitSpin ${ring.duration}s linear infinite`
     : `orbitSpin ${ring.duration}s linear infinite reverse`;
 
-  // Opacity fades for outer rings
-  const ringOpacity = Math.max(0.08, 0.25 - index * 0.012);
 
   return (
     <>
-      {/* SVG orbital path circle (visual ring) */}
-      <circle
-        cx="50%"
-        cy="50%"
-        r={ring.radius}
-        fill="none"
-        stroke={`rgba(0,243,255,${ringOpacity})`}
-        strokeWidth="1"
-        strokeDasharray="3 8"
-        className="orbital-path"
-        style={{
-          animation: `energyFlow ${ring.duration * 0.4}s linear infinite`,
-        }}
-      />
-
       {/* Rotating container for planets */}
       <div
         className="absolute"
